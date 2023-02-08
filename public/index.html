@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1" /> 
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+
+<body>
+  <!-- Image and text -->
+  <nav class="navbar navbar-dark" style="background: #324152">
+    <a class="navbar-brand" href="#">
+      <img src="/images/vgs-logo-white.png" width="200" class="d-inline-block align-top" alt="">
+    </a>
+  </nav>
+  <div class="container pt-4">
+    <div class="row">
+      <div class="col-md">
+        <h1>Payment Details</h1>
+        <p>
+          When this form is submitted, it will send the data to a VGS Inbound Route, which will tokenize the sensitive data elements before forwarding the sanitized data to your server.
+        </p>
+        <form class="mt-4 mb-4">
+          <div class="card-logos d-flex justify-content-between mb-2">
+            <div>
+              <span class="card-logo visa"></span>
+            </div>
+            <div>
+              <span class="card-logo mc"></span>
+            </div>
+            <div>
+              <span class="card-logo amex"></span>
+            </div>
+            <div>
+              <span class="card-logo discover"></span>
+            </div>
+            <div>
+              <span class="card-logo jcb"></span>
+            </div>
+            <div>
+              <span class="card-logo diners-club"></span>
+            </div>
+            <div>
+              <span class="card-logo union-pay"></span>
+            </div>
+          </div>
+          <div>
+            <div id="cardholder-name" class="field-wrapper"></div>
+          </div>
+          <div>
+            <div id="card-number" class="field-wrapper"></div>
+          </div>
+          <div>
+            <div id="card-expiration-date" class="field-wrapper"></div>
+          </div>
+          <div>
+            <div id="card-security-code" class="field-wrapper"></div>
+          </div>
+          <div hidden>
+            <div id="vgs-session-id" ></div>
+          </div>
+          <button class="btn btn-primary" type="submit">Post Payment</button>
+        </form>
+      </div>
+      <div class="col bg-light">
+        <h3 class="mt-2">Response</h3>
+        <div id="loading" class="text-center pt-3 d-none">
+          <img src="/images/loading-gif.gif" alt="waiting for response" width="50px" />
+        </div>
+        <pre id="response"></pre>
+      </div>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+  <script src="https://js.verygoodvault.com/vgs-collect/2.5.0/vgs-collect.js"></script>
+  <script src="./form.js" async></script>
+</body>
+
+</html>

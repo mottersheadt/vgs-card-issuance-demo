@@ -1,0 +1,99 @@
+* {
+  box-sizing: border-box;
+  font-family: sofia,sofiaFallback,arial,sans-serif;
+}
+
+iframe {
+  width: 100%;
+  height: 100%;
+}
+
+form {
+  width: 100%;
+  max-width: 500px;
+}
+
+label {
+  margin-bottom: 8px;
+  display: block;
+  color: #40545F;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.field-wrapper {
+  margin-bottom: 16px;
+  width: 100%;
+  height: 52px;
+  padding-top: 6px;
+  padding-right: 12px;
+  padding-bottom: 6px;
+  padding-left: 12px;
+  border: 2px solid #777279;
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 1px transparent;
+  transition: box-shadow .25s,border-color .25s;
+  position: relative;
+  font-size: 16px;
+}
+
+.vgs-collect-container__focused {
+  border-color: #145FF5;
+  box-shadow: 0px 0px 6px rgb(87 158 255 / 40%);
+}
+
+.vgs-collect-container__invalid.vgs-collect-container__dirty:not(.vgs-collect-container__focused) {
+  border-color: #FF0000;
+  box-shadow: 0px 0px 6px rgb(255 0 0 / 40%);
+}
+
+.card-logo {
+  width: 60px;
+  height: 29px;
+  display: inline-block;
+  background-position: center;
+  background-size: auto 33px;
+  background-repeat: no-repeat;
+  border: 1px solid #dddddd;
+  border-radius: 5px;
+  height: 35px;
+}
+
+.card-logo.visa {
+  background: url(/images/visa.jpg) no-repeat center center;
+  background-size: auto 16px;
+  padding: 16px;
+}
+
+.card-logo.mc {
+  background: url(/images/mc.png) no-repeat center center;
+  background-size: auto 25px;
+  padding: 16px;
+}
+
+.card-logo.amex {
+  background: url(/images/amex.png) no-repeat center center #099BC9;
+  background-size: contain;
+  border-radius: 0.4rem;
+  height: 34.5px;
+}
+
+.card-logo.discover {
+  background: url(/images/discover.jpg) no-repeat center center;
+  background-size: contain;
+}
+
+.card-logo.diners-club {
+  background: url(/images/diners-club.png) no-repeat center center;
+  background-size: auto 16px;
+}
+
+.card-logo.jcb {
+  background: url(/images/jcb.png) no-repeat center center;
+  background-size: auto 27px;
+}
+
+.card-logo.union-pay {
+  background: url(/images/union-pay.png) no-repeat center center;
+  background-size: auto 24px;
+}
