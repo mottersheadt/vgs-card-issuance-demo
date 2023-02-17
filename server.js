@@ -10,7 +10,6 @@ console.log(`Outbound route certificate is stored at this path: ${process.env['N
 const VGS_VAULT_ID=process.env.VGS_VAULT_ID;
 const VGS_USERNAME=process.env.VGS_USERNAME;
 const VGS_PASSWORD=process.env.VGS_PASSWORD;
-const STRIPE_KEY=process.env.STRIPE_KEY;
 
 const app = express();
 
@@ -18,24 +17,43 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static('public'))
 
-app.post('/post', async (req, res) => {
-    const creditCardInfo = req.body;
-    console.log("Received Tokenized Card Info:");
-    console.log(creditCardInfo);
-    let response = req.body;
-    response.message = "Credit card information received on server. Echoing back request body.";
-    
-    // let agent = getProxyAgent();
-    // response = await postStripePayment(creditCardInfo, agent)
-
-    res.send({"response": response});
-});
-
 app.get('/get_vault_id', async (req, res) => {
     res.setHeader('content-type', 'application/json')
     res.send({
         "vault_id": VGS_VAULT_ID,
     });
+});
+
+app.get('/issue_card', async (req, res) => {
+    let agent = getProxyAgent();
+    let cardDataTokens = await issueNewCard(agent);
+
+    res.setHeader('content-type', 'application/json')
+    res.send(cardDataTokens);
+});
+
+// Return the card cvc that was passed in.
+// In a real environment, we will also perform
+// validation on the user session to ensure they
+// are allowed to reveal this value. This validation
+// will be owned by the same authentication system
+// that the rest of the customer's app employs.
+app.post('/reveal_card_number', async (req, res) => {
+    console.log(req.body);
+    res.setHeader('content-type', 'application/json');
+    res.send(req.body);
+});
+
+// Return the card cvc that was passed in.
+// In a real environment, we will also perform
+// validation on the user session to ensure they
+// are allowed to reveal this value. This validation
+// will be owned by the same authentication system
+// that the rest of the customer's app employs.
+app.post('/reveal_cvc', async (req, res) => {
+    console.log(req.body);
+    res.setHeader('content-type', 'application/json');
+    res.send(req.body);
 });
 
 app.listen(3000, () => {
@@ -55,39 +73,36 @@ function getProxyAgent() {
     });
 }
 
-async function postStripePayment(creditCardInfo, agent) {
-    let expiry = creditCardInfo['card-expiration-date'].split('/')
-
-    let buff = new Buffer(STRIPE_KEY+":");
-    let base64Auth = buff.toString('base64');
-
+// This function simulates a request to a card issuer.
+// The request will be tunneled through a VGS Outbound Route
+// to tokenize the data during the response phase.
+// Response format:
+//   {
+//     card_number: 'tok_sandbox_pzR4KsYmCJkcyfXTPw8TrA'
+//   }
+async function issueNewCard(agent) {
     const instance = axios.create({
-        baseURL: 'https://api.stripe.com',
-        headers: {
-            'authorization': `Basic ${base64Auth}`,
-        },
+        // For this example we use the VGS echo server so that
+        // we can consistently get a card number without relying
+        // on a third-party integration.
+        // In a real card issuance environment, this request will
+        // go to the API of the service who is managing creating the
+        // card number.
+        baseURL: 'https://echo.secure.verygood.systems',
         httpsAgent: agent,
     });
     
     try {
-        let response = await instance.post('/v1/charges', qs.stringify({
-            amount: '100',
-            currency: 'usd',
-            description: 'Example Stripe Charge',
-            card: {
-                number: creditCardInfo['card-number'],
-                cvc: creditCardInfo['card-security-code'],
-                exp_month: expiry[0].trim(),
-                exp_year: expiry[1].trim(),
-                name: creditCardInfo['cardholder-name']
-            }
-        }));
+        // For testing purposes, we provide the card_number and cvc in the request
+        // so that we can tokenize the values it in response from the echo server.
+        let response = await instance.post('/issue_card', {
+            'card_number': '4242424242424242',
+            'cvc': '123',
+            'expiry': '12/26',
+            'name': 'Jordan Newman'
+        });
         console.log(response.data)
-        return {
-            id: response.data.id,
-            status: response.data.status,
-            psp: 'stripe'
-        }
+        return response.data
     }
     catch(error) {
         console.log('FAILURE!');

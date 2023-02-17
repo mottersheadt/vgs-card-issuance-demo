@@ -14,3 +14,6 @@
 1. Configure the filters in your vault (or import the `vgs-route-config.yaml` file in this repository)
 1. Update your VGS Inbound Route's Upstream URL to the same URL that is in your browser.
 1. Enter card information into Collect JS form and submit payment
+
+### Acknowledgements
+- The beautiful card graphic in this demo was created by Ryan Mcguinn. The code was taken and modifed from this codepen: https://codepen.io/rmcguinn/pen/JpVwBp, which is referenced on this article: https://freefrontend.com/css-credit-cards/.
