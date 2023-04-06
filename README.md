@@ -1,4 +1,4 @@
-# VGS Payment Acceptance Demo
+# VGS Card Issuance Demo
 
 ## How to use this repo:
 1. Create a new Github codespace in this repo
