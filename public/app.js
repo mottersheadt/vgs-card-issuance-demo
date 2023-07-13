@@ -4,6 +4,8 @@ async function setUpApp() {
   const APP_CONFIG = (await axios.get('/get_vault_id')).data;
   console.log("Vault ID:", APP_CONFIG.vault_id)
   let CARD_DATA = {}
+  let SEC_EL_CARD_NUMBER = null;
+  let SEC_EL_CARD_CVC = null;
 
   // Show.js initialization
   const show = VGSShow.create(APP_CONFIG.vault_id, function (state) {
@@ -21,22 +23,35 @@ async function setUpApp() {
     $('#card-tokens').html(JSON.stringify(CARD_DATA, null, 4));
     $('#good-thru-value').html(CARD_DATA.expiry)
     $('.name h3').html(CARD_DATA.name)
+    securelyLoadCardNumber()
+    securelyLoadCvc()
   });
 
   $('#show-card-btn').on('click', function () {
     $('#show-card-btn').addClass('transparent')
-    let cardNumber = securelyRenderCard();
-    let cvc = securelyRenderCvc();
-
-    cardNumber.on('revealSuccess', function() {
-      renderCopyBtn(cardNumber);
-      $('#secret-card-number').removeClass('transparent')
-      $('#secret-cvc').removeClass('transparent')
-    })
+    showCardNumber();
+    showCardCvc();
   })
 
-  function securelyRenderCard() {
-    const cardNumber = show.request({
+  function securelyLoadCvc() {
+    SEC_EL_CARD_CVC = show.request({
+      name: 'secret-cvc',
+      method: 'POST',
+      path: '/reveal_card_cvc',
+      payload: { 'cvc': CARD_DATA.cvc },
+      htmlWrapper: 'text',
+      jsonPathSelector: 'cvc',
+    });
+    SEC_EL_CARD_CVC.render('#secret-cvc', {
+      fontSize: '21px',
+      color: '#fff',
+      textAlign: 'right',
+      fontFamily: 'sofia,sofiaFallback,arial,sans-serif'
+    });
+  }
+
+  function securelyLoadCardNumber() {
+    SEC_EL_CARD_NUMBER = show.request({
       name: 'secret-card-number',
       method: 'POST',
       path: '/reveal_card_number',
@@ -45,32 +60,26 @@ async function setUpApp() {
       jsonPathSelector: 'card_number',
       serializers: [show.SERIALIZERS.replace('(\\d{4})(\\d{4})(\\d{4})(\\d{4})', '$1 $2 $3 $4')],
     });
-    $('#redacted-card-number').addClass('transparent');
-    cardNumber.render('#secret-card-number', {
+    SEC_EL_CARD_NUMBER.render('#secret-card-number', {
       fontSize: '1.8em',
       color: '#fff',
       whiteSpace: 'nowrap',
       fontFamily: 'sofia,sofiaFallback,arial,sans-serif'
     });
-    return cardNumber;
+    SEC_EL_CARD_NUMBER.on('revealSuccess', function() {
+      renderCopyBtn(SEC_EL_CARD_NUMBER);
+    })
   }
 
-  function securelyRenderCvc() {
-    const cvc = show.request({
-      name: 'secret-cvc',
-      method: 'POST',
-      path: '/reveal_card_cvc',
-      payload: { 'cvc': CARD_DATA.cvc },
-      htmlWrapper: 'text',
-      jsonPathSelector: 'cvc',
-    });
+  function showCardNumber() {
+    $('#redacted-card-number').addClass('transparent');
+    $('#secret-card-number').removeClass('transparent');
+    $('#copy').removeClass('transparent')
+  }
+
+  function showCardCvc() {
     $('#redacted-cvc').addClass('transparent');
-    cvc.render('#secret-cvc', {
-      fontSize: '21px',
-      color: '#fff',
-      textAlign: 'right',
-      fontFamily: 'sofia,sofiaFallback,arial,sans-serif'
-    });
+    $('#secret-cvc').removeClass('transparent');
   }
   function renderCopyBtn(cardNumber) {
     const copyBtn = show.copyFrom(cardNumber,
@@ -94,7 +103,6 @@ async function setUpApp() {
       height: '37px',
       outline: 'none',
     });
-    $('#copy').removeClass('transparent')
   }
 
 }

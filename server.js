@@ -96,7 +96,10 @@ async function issueNewCard(agent) {
         // For testing purposes, we provide the card_number and cvc in the request
         // so that we can tokenize the values it in response from the echo server.
         // Sending encrypted data value so that we can decrypt and tokenize the values in-transit
-        let response = await instance.post('/issue_card', "c1zraTnOB6aXO5MW6jCGYhcb3LXVT34SOAc9TFHtYhIkiIzmN1ZWiwwGDwCCfHkxezmFDnAySKVboxIZhymSp+393s4BOmyZFdwNXKLrGLlQl/9Qy8xN/g+1+N2M/+9pLeXdR9RdHo7HFcRyy+H/SUoxDWcH9rpaH0HTlUy8bYYXFwqgGcCWw6y4VMwXzId03KaUVLXzPO7YzAuG91nCe8cP3RkVFLgafupUhsUPFbFDtBIdmDraUjUbsX6BmO3/GFO26m+WzwJp8jhCau0LjfrKIYoatcHUPCIpQXIgodRZDovlgG/A+TeaQlqJeV2ENx6Zb44Y/b5xLe20Bhv0lh86GFzL/RR1dKpP1eU7gb1RrSKm732DtUtIoa+LYPFUkjGQekb6BlCelPV+RSTvMzaNxDbjZ0o8J2D+367XmSYIS8fQC6h0lQWZVudw6sFJ6z56zrc93tHepLstfl2a+utO/nPUp+vTiCiHJy85ejWP6IayHp8gRDiumOBgsENZ6PhKx3bORskBdaeaj8FNqF9ztdvffQp1rAK0+I5HP/6gyVw3adNuvNxXEl4Mkqw+cI6YVUWJDiM1wyyljIJa4WLwq1DXUKgJtK6VeiU+8n6iXZQN1pc/burUyJYsKaZ+2dLTK0cQ0FdDCqJJsx3vFN4ZumvRuLKYmOPUoYhRv9E=");
+        let response = await instance.post(
+            '/issue_card',
+            {'card_number':'4242424242424242','cvc':'123'}
+        );
         console.log(response.data)
         return response.data
     }
